@@ -35,9 +35,18 @@ vec3 tpmap(vec3 p){
   float saturate(float p) {
     return (min(max(p,0.),1.));
   }
+
   float DE(vec3 p)
   {
+  float x=round(p.x);
+  float y=round(p.y);
+  float z=round(p.z);
+  vec3 i=vec3(x,y,z);
+  
+  
+
   return (texture3D(text,p).r);
+ 
   }
  int MaxRaySteps=100;
 float MinimumDistance=0.008;
@@ -88,19 +97,22 @@ float trace(vec3 from, vec3 direction)
 	float ret=0.0;
 	vec3 nor=vec3(0.0,0.0,0.0);
 
-	for (steps=0; steps < 200; steps++) 
+	for (steps=0; steps < 100; steps++) 
 	{
 		vec3 p = from + totalDistance * direction;
 		float distance = DE(p);
-		totalDistance += distance;
-
-		if (distance< 0.0009) 
+		//totalDistance += distance;
+		totalDistance+=0.1;
+		if (distance< 0.9) 
 		{
 			ret=totalDistance;
 			break;
 		}
 
-		
+		if(steps==100-1)
+		{
+			return 1000000.0;
+		}
 
 	}
 	return ret;
@@ -144,9 +156,9 @@ void main()
 	
 	vec3 s=mix(vec3(0.1,0.1,0.8),vec3(0.8,0.1,0.1),(surfaceNormal.y+1.0)/2.0);
 
-	fs_out_col = ((diffuseColor*vec4(0.9))-(vec4(s/2.0,1)))* tex;
+	//fs_out_col = ((diffuseColor*vec4(0.9))-(vec4(s/2.0,1)))* tex;
 	t=1.0/t;
-	//fs_out_col =vec4(t,t,t,1);
+	fs_out_col =vec4(t,t,t,1);
 	// viewport transzformáció: http://www.songho.ca/opengl/gl_transform.html 
 	// gl_DepthRange: http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf , 130.o. 
 	vec4 clipPos = viewProj * vec4( intersectionPoint, 1 );

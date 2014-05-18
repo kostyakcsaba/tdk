@@ -26,8 +26,13 @@ GLuint CMyApp::GenTexture()
 	p.y=fmodf(p.y,5.0)-2.5;
 	p.z=fmodf(p.z,5.0)-2.5;
         
-		
-			tex[i][j][z][0] = (sqrt((float)(p.x*p.x+p.y*p.y+p.z*p.z))-2.0);
+	if ((sqrt((float)(p.x*p.x + p.y*p.y + p.z*p.z)) - 0.2) < 0.1)
+	{
+		tex[i][j][z][0] = 0;
+	}
+	else{
+		tex[i][j][z][0] = (sqrt((float)(p.x*p.x + p.y*p.y + p.z*p.z)) - 0.2);
+	}
 			tex[i][j][z][1] = 0;
 			tex[i][j][z][2] = 0;
 			}}}
@@ -39,7 +44,7 @@ GLuint CMyApp::GenTexture()
 	
 	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT ); glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT );
-	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ); glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	// download 3D volume texture for pre-classification 
 	glTexImage3D( GL_TEXTURE_3D, 0, GL_RGB8, 256, 256, 256, 0, GL_RGB, GL_FLOAT, tex );
 	// töltsük fel adatokkal az...
