@@ -2,6 +2,41 @@
 #include "GLUtils.hpp"
 #include <Wingdi.h>
 
+//
+//seged fuggvenyek a tavolsag meghatarozasahoz es reszletesseg növelesehez
+//
+const int iterations=20;
+const float scale=1.5;
+const float fixedRadius2=10;
+const float minRadius2=1;
+const float foldingLimit=1.0;
+
+//mandelbox segéd függvényei
+void boxFold(glm::vec3 &z,  float &dz)
+{
+    glm::vec3 z1 = glm::clamp(z, -foldingLimit, foldingLimit) ;
+    z=glm::vec3(z1.x*2,z1.y*2,z1.z*2)-z;
+}
+
+void sphereFold(glm::vec3 &z,float &dz)
+{
+    float r2 = glm::dot(z,z);
+    if (r2<minRadius2)
+    {
+        // lineáris belsõ méretezés
+        float temp = (fixedRadius2/minRadius2);
+        z *= temp;
+        dz*= temp;
+    } else if (r2<fixedRadius2)
+    {
+        // ez a tényleges gömb invertálás
+        float temp =(fixedRadius2/r2);
+        z *= temp;
+        dz*= temp;
+    }
+}
+
+
 CMyApp::CMyApp(void)
 {
 	mesh = 0;
@@ -22,16 +57,18 @@ GLuint CMyApp::GenTexture()
         {
 
 	 p = glm::vec3((float)i/50.0,(float)j/50.0,(float)z/50.0);
-    p.x=fmodf(p.x,5.0)-2.5;
-	p.y=fmodf(p.y,5.0)-2.5;
-	p.z=fmodf(p.z,5.0)-2.5;
-        
-	if ((sqrt((float)(p.x*p.x + p.y*p.y + p.z*p.z)) - 0.2) < 0.1)
+    p.x-=2.5;
+	p.y-=2.5;
+	p.z-=2.5;
+        /////////////////////////
+
+	if ((sqrt((float)(p.x*p.x + p.y*p.y + p.z*p.z)) - 2) < 0.1)
 	{
+
 		tex[i][j][z][0] = 0;
 	}
 	else{
-		tex[i][j][z][0] = (sqrt((float)(p.x*p.x + p.y*p.y + p.z*p.z)) - 0.2);
+		tex[i][j][z][0] = (sqrt((float)(p.x*p.x + p.y*p.y + p.z*p.z)) - 2);
 	}
 			tex[i][j][z][1] = 0;
 			tex[i][j][z][2] = 0;
@@ -44,7 +81,7 @@ GLuint CMyApp::GenTexture()
 	
 	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT ); glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT );
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	// download 3D volume texture for pre-classification 
 	glTexImage3D( GL_TEXTURE_3D, 0, GL_RGB8, 256, 256, 256, 0, GL_RGB, GL_FLOAT, tex );
 	// töltsük fel adatokkal az...

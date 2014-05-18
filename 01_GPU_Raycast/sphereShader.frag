@@ -102,8 +102,8 @@ float trace(vec3 from, vec3 direction)
 		vec3 p = from + totalDistance * direction;
 		float distance = DE(p);
 		//totalDistance += distance;
-		totalDistance+=0.1;
-		if (distance< 0.9) 
+		totalDistance+=0.03;
+		if (distance< 0.00009) 
 		{
 			ret=totalDistance;
 			break;
@@ -156,9 +156,9 @@ void main()
 	
 	vec3 s=mix(vec3(0.1,0.1,0.8),vec3(0.8,0.1,0.1),(surfaceNormal.y+1.0)/2.0);
 
-	//fs_out_col = ((diffuseColor*vec4(0.9))-(vec4(s/2.0,1)))* tex;
+	fs_out_col = ((diffuseColor*vec4(0.9))+(vec4(s/2.0,1)))* tex;
 	t=1.0/t;
-	fs_out_col =vec4(t,t,t,1);
+	//fs_out_col =vec4(t,t,t,1);
 	// viewport transzformáció: http://www.songho.ca/opengl/gl_transform.html 
 	// gl_DepthRange: http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf , 130.o. 
 	vec4 clipPos = viewProj * vec4( intersectionPoint, 1 );
