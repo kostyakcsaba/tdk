@@ -56,7 +56,7 @@ GLuint CMyApp::GenTexture()
 			for (int z=0; z<256; ++z)
         {
 
-	 p = glm::vec3((float)i/50.0,(float)j/50.0,(float)z/50.0);
+	p = glm::vec3((float)i/50.0,(float)j/50.0,(float)z/50.0);
     p.x-=2.5;
 	p.y-=2.5;
 	p.z-=2.5;
@@ -79,8 +79,8 @@ GLuint CMyApp::GenTexture()
     glBindTexture(GL_TEXTURE_3D, tmpID);
 
 	
-	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT ); glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT );
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP); glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	// download 3D volume texture for pre-classification 
 	glTexImage3D( GL_TEXTURE_3D, 0, GL_RGB8, 256, 256, 256, 0, GL_RGB, GL_FLOAT, tex );

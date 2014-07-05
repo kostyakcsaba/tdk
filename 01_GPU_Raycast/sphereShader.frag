@@ -97,19 +97,25 @@ float trace(vec3 from, vec3 direction)
 	float ret=0.0;
 	vec3 nor=vec3(0.0,0.0,0.0);
 
-	for (steps=0; steps < 100; steps++) 
+	for (steps=0; steps < 50; steps++) 
 	{
 		vec3 p = from + totalDistance * direction;
 		float distance = DE(p);
-		//totalDistance += distance;
-		totalDistance+=0.03;
+		if ((sqrt((p.x*p.x + p.y*p.y + p.z*p.z)) - 2) >= 0.1)
+	{
+	totalDistance +=(sqrt((p.x*p.x + p.y*p.y + p.z*p.z)) - 2);
+		distance=10;
+	}else{
+		totalDistance += clamp(distance/5.0,0,1000);
+		}
+		//totalDistance+=0.03;
 		if (distance< 0.00009) 
 		{
 			ret=totalDistance;
 			break;
 		}
 
-		if(steps==100-1)
+		if(steps==50-1)
 		{
 			return 1000000.0;
 		}
