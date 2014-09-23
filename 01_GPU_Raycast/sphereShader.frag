@@ -38,14 +38,14 @@ vec3 tpmap(vec3 p){
 
   float DE(vec3 p)
   {
-  float x=round(p.x);
-  float y=round(p.y);
-  float z=round(p.z);
+  float x=p.x/4;
+  float y=p.y/4+(texture3D(text,vec3(p.x/4,(254.0/256),p.z/4)).r);
+  float z=p.z/4;
   vec3 i=vec3(x,y,z);
   
   
 
-  return (texture3D(text,p).r);
+  return (texture3D(text,i).r);
  
   }
  int MaxRaySteps=100;
@@ -97,25 +97,27 @@ float trace(vec3 from, vec3 direction)
 	float ret=0.0;
 	vec3 nor=vec3(0.0,0.0,0.0);
 
-	for (steps=0; steps < 50; steps++) 
+	for (steps=0; steps < 500; steps++) 
 	{
+		
 		vec3 p = from + totalDistance * direction;
 		float distance = DE(p);
-		if ((sqrt((p.x*p.x + p.y*p.y + p.z*p.z)) - 2) >= 0.1)
+		if ((sqrt((p.x*p.x + p.y*p.y + p.z*p.z)) - 6) >= 0.1)
 	{
-	totalDistance +=(sqrt((p.x*p.x + p.y*p.y + p.z*p.z)) - 2);
+	totalDistance +=(sqrt((p.x*p.x + p.y*p.y + p.z*p.z)) - 6);
 		distance=10;
 	}else{
-		totalDistance += clamp(distance/5.0,0,1000);
+		totalDistance += clamp(distance/50.0,0,1000);
 		}
 		//totalDistance+=0.03;
-		if (distance< 0.00009) 
+	
+		if (distance< 0.000001) 
 		{
 			ret=totalDistance;
 			break;
 		}
 
-		if(steps==50-1)
+		if(steps==500-1)
 		{
 			return 1000000.0;
 		}

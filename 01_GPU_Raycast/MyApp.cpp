@@ -49,6 +49,7 @@ CMyApp::~CMyApp(void)
 
 GLuint CMyApp::GenTexture()
 {
+	srand(SDL_GetTicks());
      static float tex[256][256][256][3];
  glm::vec3 p;
     for (int i=0; i<256; ++i){
@@ -56,23 +57,40 @@ GLuint CMyApp::GenTexture()
 			for (int z=0; z<256; ++z)
         {
 
-	p = glm::vec3((float)i/50.0,(float)j/50.0,(float)z/50.0);
-    p.x-=2.5;
-	p.y-=2.5;
-	p.z-=2.5;
+	p = glm::vec3((float)i,(float)j,(float)z);
+    p.x-=100;
+	p.y-=100;
+	p.z-=100;
         /////////////////////////
+	
 
-	if ((sqrt((float)(p.x*p.x + p.y*p.y + p.z*p.z)) - 2) < 0.1)
-	{
+		   tex[i][j][z][0] = 0;
 
-		tex[i][j][z][0] = 0;
-	}
-	else{
-		tex[i][j][z][0] = (sqrt((float)(p.x*p.x + p.y*p.y + p.z*p.z)) - 2);
-	}
 			tex[i][j][z][1] = 0;
 			tex[i][j][z][2] = 0;
-			}}}
+			if (i == 0 || i == 255||j==0||j==255||z==0||z==255)
+			{
+				tex[i][j][z][0] = 1;
+			}
+			else if (j==254){
+				
+				tex[i][254][z][0] = (rand()%100)/10000.0;
+				//tex[i][j][z][0] = 1;
+			}
+			else if (j == 11 || j == 10)
+			{
+				tex[i][j][z][0] = 1;
+			}
+			}
+		}//std::cout << (float)i / 256.0 << std::endl;
+		
+	}
+
+
+	
+
+
+	
 	GLuint tmpID;
 	 glGenTextures(1, &tmpID);
 	// aktiváljuk a most generált nevû textúrát
@@ -80,7 +98,7 @@ GLuint CMyApp::GenTexture()
 
 	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP); glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP); glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	// download 3D volume texture for pre-classification 
 	glTexImage3D( GL_TEXTURE_3D, 0, GL_RGB8, 256, 256, 256, 0, GL_RGB, GL_FLOAT, tex );
